@@ -32,16 +32,12 @@ Open your browser and go to `http://localhost:8080`
 **Backend:**
 - Spring Boot 3.x
 - Spring Data JPA
-- H2 Database
 - Lombok
-- Maven
 
 **Frontend:**
 - Thymeleaf
 - Bootstrap 5
-- JavaScript (ES6+)
 - CSS3 (Custom animations)
-- Google Fonts
 
 ## 📌 API Endpoints
 
