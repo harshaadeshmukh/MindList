@@ -39,8 +39,9 @@ Open your browser and go to `http://localhost:8080`
 - Bootstrap 5
 - CSS3 (Custom animations)
 
-## 📷 Image
-![Preview](https://raw.githubusercontent.com/username/repo/main/images/your-image.png)
+
+## 🖼️ Preview
+<img src="image.png" alt="MindList UI" width="800"/>
 
 
 ## 📌 API Endpoints
