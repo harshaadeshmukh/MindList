@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindList — Keep Life Simple</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg-gradient-start: #faf5ff;
+            --bg-gradient-end: #ede9fe;
+            --card-bg: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border: #e5e7eb;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 20px rgba(99, 102, 241, 0.12);
+            --shadow-lg: 0 10px 40px rgba(99, 102, 241, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background elements */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.06) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 25s ease-in-out infinite reverse;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(5deg); }
+            66% { transform: translate(-20px, 20px) rotate(-5deg); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .todo-card {
+            max-width: 700px;
+            margin: auto;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+            animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Header Styling */
+        .header-section {
+            text-align: center;
+            padding: 48px 32px 32px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(245, 158, 11, 0.03) 100%);
+            border-bottom: 2px solid rgba(99, 102, 241, 0.1);
+            position: relative;
+        }
+
+        .header-section::before {
+            content: '✨';
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 24px;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.3; transform: scale(1) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
+        }
+
+        .todo-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .todo-subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        /* Form Styling */
+        .input-section {
+            padding: 32px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 32px;
+        }
+
+        .task-input {
+            width: 100%;
+            padding: 18px 24px;
+            padding-right: 140px;
+            font-size: 16px;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #fafafa;
+        }
+
+        .task-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .task-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .add-btn {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .add-btn:hover {
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .add-btn:active {
+            transform: translateY(-50%) scale(0.98);
+        }
+
+        /* Task List */
+        .tasks-container {
+            padding: 0 32px 32px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .tasks-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .tasks-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .tasks-container::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 10px;
+        }
+
+        .task-item {
+            padding: 20px 24px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideIn 0.4s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .task-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--accent) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .task-item:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-light);
+        }
+
+        .task-item:hover::before {
+            opacity: 1;
+        }
+
+        /* Task Content */
+        .task-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-checkbox {
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .task-checkbox:hover {
+            background: rgba(99, 102, 241, 0.1);
+            transform: scale(1.1);
+        }
+
+        .task-item.completed .task-checkbox {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .task-item.completed .task-checkbox::after {
+            content: '✓';
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* Task Title - View Mode */
+        .task-title-wrapper {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-title {
+            font-size: 16px;
+            color: var(--text-primary);
+            font-weight: 500;
+            word-break: break-word;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            position: relative;
+            display: inline-block;
+            max-width: 100%;
+        }
+
+        .task-title:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .task-title::after {
+            content: '✏️';
+            opacity: 0;
+            margin-left: 8px;
+            font-size: 14px;
+            transition: opacity 0.2s ease;
+        }
+
+        .task-title:hover::after {
+            opacity: 0.6;
+        }
+
+        .task-item.completed .task-title {
+            text-decoration: line-through;
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        /* Task Title - Edit Mode */
+        .edit-form {
+            flex: 1;
+            display: none;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .edit-form.active {
+            display: flex;
+        }
+
+        .edit-input {
+            flex: 1;
+            padding: 8px 12px;
+            font-size: 16px;
+            border: 2px solid var(--primary);
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .edit-input:focus {
+            outline: none;
+            border-color: var(--primary-dark);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        .edit-input.completed {
+            text-decoration: line-through;
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        .edit-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .save-btn, .cancel-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .save-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .cancel-btn {
+            background: rgba(107, 114, 128, 0.1);
+            color: var(--text-secondary);
+        }
+
+        .cancel-btn:hover {
+            background: rgba(107, 114, 128, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* Hide title when editing */
+        .task-title-wrapper.editing .task-title {
+            display: none;
+        }
+
+        /* Task Actions */
+        .task-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            border: 1px solid transparent;
+        }
+
+        .btn-toggle {
+            color: var(--primary);
+            background: rgba(99, 102, 241, 0.08);
+        }
+
+        .btn-toggle:hover {
+            background: rgba(99, 102, 241, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .btn-delete {
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        .btn-delete:hover {
+            background: rgba(239, 68, 68, 0.15);
+            transform: translateY(-1px);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+            animation: sway 3s ease-in-out infinite;
+        }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        .empty-state-text {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: auto;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-content {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 24px 32px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: var(--shadow-md);
+        }
+
+        .footer-text {
+            font-size: 16px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .footer-heart {
+            display: inline-block;
+            color: #ef4444;
+            animation: heartbeat 1.5s ease-in-out infinite;
+            margin: 0 4px;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            10%, 30% { transform: scale(1.1); }
+            20%, 40% { transform: scale(1); }
+        }
+
+        .footer-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+            position: relative;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            transition: width 0.3s ease;
+        }
+
+        .footer-link:hover::after {
+            width: 100%;
+        }
+
+        .footer-link:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            .todo-card {
+                border-radius: 20px;
+                margin: 0;
+            }
+
+            .header-section {
+                padding: 40px 24px 24px;
+            }
+
+            .todo-title {
+                font-size: 40px;
+            }
+
+            .todo-subtitle {
+                font-size: 15px;
+            }
+
+            .input-section {
+                padding: 24px;
+            }
+
+            .input-wrapper {
+                margin-bottom: 24px;
+            }
+
+            .task-input {
+                padding: 16px 20px;
+                padding-right: 20px;
+                padding-bottom: 70px;
+                font-size: 16px;
+            }
+
+            .add-btn {
+                position: absolute;
+                right: 6px;
+                bottom: 6px;
+                top: auto;
+                transform: none;
+                width: calc(100% - 12px);
+                padding: 14px;
+                font-size: 16px;
+            }
+
+            .add-btn:hover {
+                transform: scale(1.02);
+            }
+
+            .tasks-container {
+                padding: 0 24px 24px;
+            }
+
+            .task-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+                padding: 20px;
+            }
+
+            .task-content {
+                width: 100%;
+            }
+
+            .task-title-wrapper {
+                width: 100%;
+            }
+
+            .edit-form {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .edit-input {
+                width: 100%;
+                font-size: 16px;
+                padding: 12px 16px;
+            }
+
+            .edit-buttons {
+                width: 100%;
+                gap: 8px;
+            }
+
+            .save-btn, .cancel-btn {
+                flex: 1;
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .task-actions {
+                width: 100%;
+                justify-content: flex-end;
+                gap: 10px;
+            }
+
+            .action-btn {
+                padding: 10px 20px;
+                font-size: 15px;
+            }
+
+            .footer {
+                padding: 32px 16px;
+            }
+
+            .footer-content {
+                padding: 20px 24px;
+                border-radius: 16px;
+            }
+
+            .footer-text {
+                font-size: 15px;
+                line-height: 1.6;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .todo-title {
+                font-size: 36px;
+            }
+
+            .footer-text {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="todo-card">
+
+        <!-- Header -->
+        <div class="header-section">
+            <h1 class="todo-title">MindList</h1>
+            <p class="todo-subtitle">Keep life simple & organized</p>
+        </div>
+
+        <!-- Input Section -->
+        <div class="input-section">
+            <form action="/" method="post">
+                <div class="input-wrapper">
+                    <input
+                            type="text"
+                            name="title"
+                            class="task-input"
+                            placeholder="What needs to be done?"
+                            autocomplete="off"
+                            required>
+                    <button class="add-btn" type="submit">Add Task</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Task List -->
+        <div class="tasks-container">
+            <div th:each="task : ${tasks}"
+                 th:classappend="${task.completed} ? 'completed' : ''"
+                 class="task-item">
+
+                <div class="task-content">
+                    <div class="task-checkbox"></div>
+
+                    <div class="task-title-wrapper">
+                        <!-- View Mode: Click to Edit -->
+                        <span th:text="${task.title}"
+                              class="task-title"
+                              onclick="enableEdit(this)">
+                        </span>
+
+                        <!-- Edit Mode: Hidden by default -->
+                        <form th:action="@{/{id}/update(id=${task.id})}"
+                              method="post"
+                              class="edit-form"
+                              onsubmit="return true;">
+                            <input type="text"
+                                   name="title"
+                                   th:value="${task.title}"
+                                   th:classappend="${task.completed} ? 'completed' : ''"
+                                   class="edit-input"
+                                   onblur="handleBlur(this, event)"
+                                   onkeydown="handleKeydown(event)">
+                            <div class="edit-buttons">
+                                <button type="submit" class="save-btn">Save</button>
+                                <button type="button" class="cancel-btn" onclick="cancelEdit(this)">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="task-actions">
+                    <a th:href="@{/{id}/toggle(id=${task.id})}"
+                       th:text="${task.completed} ? 'Undo' : 'Done'"
+                       class="action-btn btn-toggle">
+                    </a>
+
+                    <a th:href="@{/{id}/delete(id=${task.id})}"
+                       class="action-btn btn-delete">
+                        Delete
+                    </a>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div th:if="${#lists.isEmpty(tasks)}" class="empty-state">
+                <div class="empty-state-icon">🌿</div>
+                <p class="empty-state-text">No tasks yet. Enjoy the calm!</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <div class="footer-content">
+        <p class="footer-text">
+            Crafted with <span class="footer-heart">❤</span> by
+            <a href="https://harshaadeshmukh.netlify.app" target="_blank" class="footer-link">Harshad Deshmukh</a>
+        </p>
+    </div>
+</div>
+
+<script>
+    // Enable edit mode when clicking on task title
+    function enableEdit(titleElement) {
+        const wrapper = titleElement.parentElement;
+        const form = wrapper.querySelector('.edit-form');
+        const input = form.querySelector('.edit-input');
+
+        // Add editing class to wrapper
+        wrapper.classList.add('editing');
+
+        // Show form and focus input
+        form.classList.add('active');
+        input.focus();
+
+        // Select all text for easy editing
+        input.select();
+    }
+
+    // Cancel edit mode
+    function cancelEdit(cancelBtn) {
+        const form = cancelBtn.closest('.edit-form');
+        const wrapper = form.parentElement;
+        const input = form.querySelector('.edit-input');
+        const titleElement = wrapper.querySelector('.task-title');
+
+        // Reset input value to original
+        input.value = titleElement.textContent.trim();
+
+        // Hide form and show title
+        form.classList.remove('active');
+        wrapper.classList.remove('editing');
+    }
+
+    // Handle blur event (when clicking outside)
+    function handleBlur(input, event) {
+        // Delay to allow form submission if save button was clicked
+        setTimeout(() => {
+            const form = input.closest('.edit-form');
+            const wrapper = form.parentElement;
+
+            // Only cancel if still in edit mode (wasn't submitted)
+            if (form.classList.contains('active')) {
+                const relatedTarget = event.relatedTarget;
+
+                // Don't cancel if clicking save or cancel button
+                if (!relatedTarget || (!relatedTarget.classList.contains('save-btn') &&
+                    !relatedTarget.classList.contains('cancel-btn'))) {
+                    cancelEdit(input);
+                }
+            }
+        }, 150);
+    }
+
+    // Handle keyboard shortcuts
+    function handleKeydown(event) {
+        // ESC to cancel
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            const input = event.target;
+            const form = input.closest('.edit-form');
+            const cancelBtn = form.querySelector('.cancel-btn');
+            cancelEdit(cancelBtn);
+        }
+
+        // Enter to submit (handled by form naturally, but prevent newline)
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            const form = event.target.closest('.edit-form');
+            form.submit();
+        }
+    }
+
+    // Prevent accidental form submission on checkbox click
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkboxes = document.querySelectorAll('.task-checkbox');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('click', function(e) {
+                // Find the toggle link in the same task item
+                const taskItem = this.closest('.task-item');
+                const toggleLink = taskItem.querySelector('.btn-toggle');
+                if (toggleLink) {
+                    window.location.href = toggleLink.href;
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
