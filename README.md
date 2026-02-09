@@ -39,6 +39,10 @@ Open your browser and go to `http://localhost:8080`
 - Bootstrap 5
 - CSS3 (Custom animations)
 
+## 📷 Image
+![Preview](https://raw.githubusercontent.com/username/repo/main/images/your-image.png)
+
+
 ## 📌 API Endpoints
 
 | Method | Endpoint | Description |
