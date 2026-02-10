@@ -1,5 +1,5 @@
 # 🎯 MindList
----
+
 A beautiful and intuitive todo application built with Spring Boot. Keep your life simple and organized with a modern, gradient-designed interface.
 
 ## ✨ Features
