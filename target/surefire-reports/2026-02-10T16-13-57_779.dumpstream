@@ -1,0 +1,5 @@
+# Created at 2026-02-10T16:13:59.739
+Boot Manifest-JAR contains absolute paths in classpath 'B:\Timepass\spingboot\mindlist\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+'other' has different root
+
