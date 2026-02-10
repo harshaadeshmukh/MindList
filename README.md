@@ -4,12 +4,13 @@ A beautiful and intuitive todo application built with Spring Boot. Keep your lif
 
 ## ✨ Features
 
-- ✏️ **Click-to-Edit** - Click on task titles to edit them inline
+- ✏️ **Edit Tasks** - Update task titles with inline editing
 - ✅ **Task Management** - Add, edit, complete, and delete tasks
-- 🎨 **Beautiful UI** - Modern gradient design with smooth animations
 - 📱 **Responsive** - Works perfectly on desktop, tablet, and mobile
-- ⌨️ **Keyboard Shortcuts** - Enter to save, ESC to cancel
-- 💾 **Persistent Storage** - Tasks saved in H2 database
+- 💾 **MySQL Database** - Reliable persistent storage for all tasks
+
+## 🖼️ Preview
+<img src="image.png" alt="MindList UI" width="800"/>
 
 ## 🚀 Installation
 
@@ -29,19 +30,17 @@ Open your browser and go to `http://localhost:8080`
 
 ## 🛠️ Tech Stack
 
-**Backend:**
-- Spring Boot 3.x
-- Spring Data JPA
-- Lombok
-
-**Frontend:**
-- Thymeleaf
-- Bootstrap 5
-- CSS3 (Custom animations)
-
-
-## 🖼️ Preview
-<img src="image.png" alt="MindList UI" width="800"/>
+| Category | Technology |
+|----------|------------|
+| **Framework** | Spring Boot 3.x |
+| **ORM** | Spring Data JPA |
+| **Database** | MySQL |
+| **Build Tool** | Maven |
+| **Boilerplate Reduction** | Lombok |
+| **Template Engine** | Thymeleaf |
+| **CSS Framework** | Bootstrap 5 |
+| **Styling** | CSS3 (Custom animations) |
+| **Fonts** | Google Fonts |
 
 
 ## 📌 API Endpoints
@@ -53,17 +52,6 @@ Open your browser and go to `http://localhost:8080`
 | POST | `/{id}/update` | Update task title |
 | GET | `/{id}/toggle` | Toggle task completion |
 | GET | `/{id}/delete` | Delete task |
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 👨‍💻 Author
-
-**Harshad Deshmukh**
-
-- Portfolio: [harshaadeshmukh.netlify.app](https://harshaadeshmukh.netlify.app)
-- GitHub: [@harshaadeshmukh](https://github.com/harshaadeshmukh)
 
 ---
 
