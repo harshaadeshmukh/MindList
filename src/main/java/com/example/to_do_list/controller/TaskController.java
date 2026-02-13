@@ -1,63 +1,69 @@
 package com.example.to_do_list.controller;
-import com.example.to_do_list.models.Task;
+
+
+import com.example.to_do_list.models.User;
 import com.example.to_do_list.services.TaskService;
-import jakarta.validation.constraints.NotBlank;
+import com.example.to_do_list.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-//@RequestMapping("/tasks")
 public class TaskController {
-    private final TaskService taskService;
 
+    @Autowired
+    private TaskService taskService;
 
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
+    @Autowired
+    private UserService userService;
+
+    private User getCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        return userService.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    @GetMapping
-    public String getTasks(Model model)
-    {
-        List<Task> taskList = taskService.getAllTasks();
-        model.addAttribute("tasks" , taskList);
-        return "tasks";
+    @GetMapping("/")
+    public String index(Model model) {
+        User currentUser = getCurrentUser();
+        model.addAttribute("tasks", taskService.getAllTasksForUser(currentUser));
+        model.addAttribute("username", currentUser.getUsername());
+        return "index";
     }
 
-
-    @PostMapping
-    public String createTask(@RequestParam @NotBlank String title)
-    {
-       taskService.createTask(title);
-       return "redirect:/";
-    }
-
-    @GetMapping("/{id}/delete")
-    public String deleteTask(@PathVariable Long id)
-    {
-        taskService.deleteTask(id);
-        return "redirect:/";
-    }
-
-    @GetMapping("/{id}/toggle")
-    public String toggleTask(@PathVariable Long id)
-    {
-        taskService.toggleTask(id);
+    @PostMapping("/")
+    public String createTask(@RequestParam("title") String title) {
+        User currentUser = getCurrentUser();
+        if (title != null && !title.trim().isEmpty()) {
+            taskService.createTask(title.trim(), currentUser);
+        }
         return "redirect:/";
     }
 
     @PostMapping("/{id}/update")
-    public String updateTaskTitle(@PathVariable Long id,
-                                  @RequestParam String title) {
-        taskService.updateTaskTitle(id, title);
+    public String updateTask(@PathVariable Long id, @RequestParam("title") String title) {
+        User currentUser = getCurrentUser();
+        if (title != null && !title.trim().isEmpty()) {
+            taskService.updateTask(id, title.trim(), currentUser);
+        }
         return "redirect:/";
     }
 
+    @GetMapping("/{id}/toggle")
+    public String toggleTask(@PathVariable Long id) {
+        User currentUser = getCurrentUser();
+        taskService.toggleTask(id, currentUser);
+        return "redirect:/";
+    }
 
-
+    @GetMapping("/{id}/delete")
+    public String deleteTask(@PathVariable Long id) {
+        User currentUser = getCurrentUser();
+        taskService.deleteTask(id, currentUser);
+        return "redirect:/";
+    }
 }

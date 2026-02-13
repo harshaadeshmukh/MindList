@@ -1,52 +1,50 @@
 package com.example.to_do_list.services;
 
 import com.example.to_do_list.models.Task;
+import com.example.to_do_list.models.User;
 import com.example.to_do_list.repository.TaskRepository;
-import jakarta.validation.constraints.NotBlank;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService {
-    private  final TaskRepository taskRepository;
 
-    public TaskService(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
+    @Autowired
+    private TaskRepository taskRepository;
+
+    public List<Task> getAllTasksForUser(User user) {
+        return taskRepository.findByUserOrderByIdAsc(user);
     }
 
-    public List<Task> getAllTasks() {
-
-        return taskRepository.findAll();
+    public Task createTask(String title, User user) {
+        Task task = new Task(title, user);
+        return taskRepository.save(task);
     }
 
-    public void createTask(@NotBlank String title) {
-        Task task = new Task();
-        task.setTitle(title);
-        task.setCompleted(false);
-        taskRepository.save(task);
+    public Optional<Task> getTaskByIdAndUser(Long id, User user) {
+        return taskRepository.findByIdAndUser(id, user);
     }
 
-    public void deleteTask(Long id) {
-        taskRepository.deleteById(id);
+    public Task updateTask(Long id, String newTitle, User user) {
+        Task task = taskRepository.findByIdAndUser(id, user)
+                .orElseThrow(() -> new RuntimeException("Task not found or unauthorized"));
+        task.setTitle(newTitle);
+        return taskRepository.save(task);
     }
 
-
-    public void toggleTask(Long id) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow(()-> new IllegalArgumentException("Invalid Task Id"));
+    public Task toggleTask(Long id, User user) {
+        Task task = taskRepository.findByIdAndUser(id, user)
+                .orElseThrow(() -> new RuntimeException("Task not found or unauthorized"));
         task.setCompleted(!task.isCompleted());
-        taskRepository.save(task);
+        return taskRepository.save(task);
     }
 
-
-
-    public void updateTaskTitle(Long id, String title) {
-
-        Task task = taskRepository.findById(id)
-                .orElseThrow(()-> new IllegalArgumentException("Task Not Found"));
-
-        task.setTitle(title);
-        taskRepository.save(task);
+    public void deleteTask(Long id, User user) {
+        Task task = taskRepository.findByIdAndUser(id, user)
+                .orElseThrow(() -> new RuntimeException("Task not found or unauthorized"));
+        taskRepository.delete(task);
     }
 }
