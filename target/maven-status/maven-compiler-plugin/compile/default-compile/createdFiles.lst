@@ -1,5 +1,0 @@
-com\example\to_do_list\services\TaskService.class
-com\example\to_do_list\ToDoListApplication.class
-com\example\to_do_list\repository\TaskRepository.class
-com\example\to_do_list\controller\TaskController.class
-com\example\to_do_list\models\Task.class
