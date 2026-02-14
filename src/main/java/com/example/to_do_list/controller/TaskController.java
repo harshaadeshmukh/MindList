@@ -20,20 +20,34 @@ public class TaskController {
     @Autowired
     private UserService userService;
 
-    private User getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        return userService.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+   private User getCurrentUser() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+    if (auth == null || 
+        !auth.isAuthenticated() || 
+        auth.getPrincipal().equals("anonymousUser")) {
+        return null;
     }
 
-    @GetMapping("/")
-    public String index(Model model) {
-        User currentUser = getCurrentUser();
-        model.addAttribute("tasks", taskService.getAllTasksForUser(currentUser));
-        model.addAttribute("username", currentUser.getUsername());
-        return "index";
+    return userService.findByUsername(auth.getName()).orElse(null);
+}
+
+
+   @GetMapping("/")
+public String index(Model model) {
+
+    User currentUser = getCurrentUser();
+
+    if (currentUser == null) {
+        return "redirect:/login";
     }
+
+    model.addAttribute("tasks", taskService.getAllTasksForUser(currentUser));
+    model.addAttribute("username", currentUser.getUsername());
+
+    return "index";
+}
+
 
     @PostMapping("/")
     public String createTask(@RequestParam("title") String title) {
