@@ -3,18 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MindList — Keep Life Simple</title>
+    <title>MindList - Keep Life Simple</title>
 
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='grad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' style='stop-color:%236366f1;stop-opacity:1'/><stop offset='100%' style='stop-color:%23f59e0b;stop-opacity:1'/></linearGradient></defs><rect width='100' height='100' rx='20' fill='url(%23grad)'/><path d='M30 35 L45 50 L70 25' stroke='white' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' fill='none'/><circle cx='30' cy='65' r='5' fill='white' opacity='0.8'/><circle cx='45' cy='65' r='5' fill='white' opacity='0.8'/><circle cx='60' cy='65' r='5' fill='white' opacity='0.8'/></svg>" type="image/svg+xml">
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -24,6 +21,8 @@
             --accent: #f59e0b;
             --success: #10b981;
             --danger: #ef4444;
+
+            /* Light Theme Colors */
             --bg-gradient-start: #faf5ff;
             --bg-gradient-end: #ede9fe;
             --card-bg: #ffffff;
@@ -31,9 +30,38 @@
             --text-secondary: #6b7280;
             --text-muted: #9ca3af;
             --border: #e5e7eb;
+            --input-bg: #fafafa;
+            --task-bg-start: #fafafa;
+            --task-bg-end: #ffffff;
+            --header-bg: rgba(99, 102, 241, 0.05);
+            --floating-circle-1: rgba(99, 102, 241, 0.08);
+            --floating-circle-2: rgba(245, 158, 11, 0.06);
+
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
             --shadow-md: 0 4px 20px rgba(99, 102, 241, 0.12);
             --shadow-lg: 0 10px 40px rgba(99, 102, 241, 0.15);
+
+            --transition-speed: 0.3s;
+        }
+
+        /* Dark Theme */
+        [data-theme="dark"] {
+            --bg-gradient-start: #0f172a;
+            --bg-gradient-end: #1e293b;
+            --card-bg: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --input-bg: #0f172a;
+            --task-bg-start: #1e293b;
+            --task-bg-end: #0f172a;
+            --header-bg: rgba(99, 102, 241, 0.1);
+            --floating-circle-1: rgba(99, 102, 241, 0.15);
+            --floating-circle-2: rgba(245, 158, 11, 0.1);
+
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
 
         * {
@@ -50,6 +78,7 @@
             flex-direction: column;
             position: relative;
             overflow-x: hidden;
+            transition: background var(--transition-speed) ease;
         }
 
         /* Animated background elements */
@@ -60,10 +89,11 @@
             right: -20%;
             width: 600px;
             height: 600px;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+            background: radial-gradient(circle, var(--floating-circle-1) 0%, transparent 70%);
             border-radius: 50%;
             animation: float 20s ease-in-out infinite;
             z-index: 0;
+            transition: background var(--transition-speed) ease;
         }
 
         body::after {
@@ -73,10 +103,11 @@
             left: -10%;
             width: 500px;
             height: 500px;
-            background: radial-gradient(circle, rgba(245, 158, 11, 0.06) 0%, transparent 70%);
+            background: radial-gradient(circle, var(--floating-circle-2) 0%, transparent 70%);
             border-radius: 50%;
             animation: float 25s ease-in-out infinite reverse;
             z-index: 0;
+            transition: background var(--transition-speed) ease;
         }
 
         @keyframes float {
@@ -109,9 +140,10 @@
             border-radius: 24px;
             box-shadow: var(--shadow-lg);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--border);
             overflow: hidden;
             animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: background var(--transition-speed) ease, border var(--transition-speed) ease;
         }
 
         @keyframes scaleIn {
@@ -129,9 +161,10 @@
         .header-section {
             text-align: center;
             padding: 48px 32px 32px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(245, 158, 11, 0.03) 100%);
-            border-bottom: 2px solid rgba(99, 102, 241, 0.1);
+            background: linear-gradient(135deg, var(--header-bg) 0%, transparent 100%);
+            border-bottom: 2px solid var(--border);
             position: relative;
+            transition: all var(--transition-speed) ease;
         }
 
         .header-user-info {
@@ -146,11 +179,43 @@
             font-size: 15px;
             color: var(--text-secondary);
             font-weight: 500;
+            transition: color var(--transition-speed) ease;
         }
 
         .welcome-text span {
             color: var(--primary);
             font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            padding: 8px 12px;
+            background: var(--input-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--border);
+            transform: translateY(-1px);
+        }
+
+        .theme-icon {
+            font-size: 16px;
         }
 
         .logout-btn {
@@ -172,20 +237,6 @@
             border-color: rgba(239, 68, 68, 0.2);
         }
 
-        .header-section::before {
-            content: '✨';
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            font-size: 24px;
-            animation: sparkle 2s ease-in-out infinite;
-        }
-
-        @keyframes sparkle {
-            0%, 100% { opacity: 0.3; transform: scale(1) rotate(0deg); }
-            50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
-        }
-
         .todo-title {
             font-family: 'Playfair Display', serif;
             font-size: 48px;
@@ -203,6 +254,79 @@
             font-size: 16px;
             font-weight: 500;
             letter-spacing: 0.3px;
+            transition: color var(--transition-speed) ease;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 16px 32px;
+            background: var(--input-bg);
+            border-bottom: 1px solid var(--border);
+            transition: all var(--transition-speed) ease;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+            transition: color var(--transition-speed) ease;
+        }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 20px 32px 0;
+            border-bottom: 1px solid var(--border);
+            transition: border var(--transition-speed) ease;
+        }
+
+        .filter-tab {
+            padding: 10px 20px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .filter-tab:hover {
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        .filter-tab.active {
+            background: var(--card-bg);
+            color: var(--primary);
+        }
+
+        .filter-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
         }
 
         /* Form Styling */
@@ -224,13 +348,14 @@
             border-radius: 16px;
             font-family: 'DM Sans', sans-serif;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #fafafa;
+            background: var(--input-bg);
+            color: var(--text-primary);
         }
 
         .task-input:focus {
             outline: none;
             border-color: var(--primary);
-            background: white;
+            background: var(--card-bg);
             box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
             transform: translateY(-2px);
         }
@@ -288,7 +413,7 @@
         .task-item {
             padding: 20px 24px;
             margin-bottom: 12px;
-            background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
+            background: linear-gradient(135deg, var(--task-bg-start) 0%, var(--task-bg-end) 100%);
             border: 1px solid var(--border);
             border-radius: 16px;
             display: flex;
@@ -299,6 +424,10 @@
             animation: slideIn 0.4s ease-out;
             position: relative;
             overflow: hidden;
+        }
+
+        .task-item.hidden {
+            display: none;
         }
 
         @keyframes slideIn {
@@ -373,7 +502,7 @@
             font-weight: bold;
         }
 
-        /* Task Title - View Mode */
+        /* Task Title */
         .task-title-wrapper {
             flex: 1;
             min-width: 0;
@@ -415,7 +544,7 @@
             opacity: 0.6;
         }
 
-        /* Task Title - Edit Mode */
+        /* Edit Form */
         .edit-form {
             flex: 1;
             display: none;
@@ -435,7 +564,8 @@
             border-radius: 10px;
             font-family: 'DM Sans', sans-serif;
             font-weight: 500;
-            background: white;
+            background: var(--card-bg);
+            color: var(--text-primary);
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
             transition: all 0.2s ease;
         }
@@ -444,12 +574,6 @@
             outline: none;
             border-color: var(--primary-dark);
             box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
-        }
-
-        .edit-input.completed {
-            text-decoration: line-through;
-            color: var(--text-muted);
-            opacity: 0.7;
         }
 
         .edit-buttons {
@@ -480,16 +604,16 @@
         }
 
         .cancel-btn {
-            background: rgba(107, 114, 128, 0.1);
+            background: var(--input-bg);
             color: var(--text-secondary);
+            border: 1px solid var(--border);
         }
 
         .cancel-btn:hover {
-            background: rgba(107, 114, 128, 0.2);
+            background: var(--border);
             transform: translateY(-1px);
         }
 
-        /* Hide title when editing */
         .task-title-wrapper.editing .task-title {
             display: none;
         }
@@ -555,6 +679,7 @@
             font-size: 18px;
             font-weight: 500;
             color: var(--text-secondary);
+            transition: color var(--transition-speed) ease;
         }
 
         /* Footer */
@@ -570,11 +695,12 @@
             max-width: 700px;
             margin: 0 auto;
             padding: 24px 32px;
-            background: rgba(255, 255, 255, 0.7);
+            background: var(--card-bg);
             backdrop-filter: blur(20px);
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--border);
             box-shadow: var(--shadow-md);
+            transition: all var(--transition-speed) ease;
         }
 
         .footer-text {
@@ -582,6 +708,7 @@
             color: var(--text-secondary);
             font-weight: 500;
             letter-spacing: 0.3px;
+            transition: color var(--transition-speed) ease;
         }
 
         .footer-heart {
@@ -603,78 +730,74 @@
             font-weight: 700;
             position: relative;
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .footer-link::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-            transition: width 0.3s ease;
-        }
-
-        .footer-link:hover::after {
-            width: 100%;
         }
 
         .footer-link:hover {
             transform: translateY(-1px);
         }
 
+        /* Keyboard Shortcuts Hint */
+        .shortcuts-hint {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            animation: fadeInSlide 0.5s ease 2s forwards;
+            z-index: 100;
+            transition: all var(--transition-speed) ease;
+        }
+
+        @keyframes fadeInSlide {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .shortcuts-hint kbd {
+            background: var(--input-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            font-family: monospace;
+            margin: 0 2px;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 768px) {
-            .container {
-                padding-left: 16px;
-                padding-right: 16px;
-            }
-
-            .todo-card {
-                border-radius: 20px;
-                margin: 0;
-            }
-
-            .header-section {
-                padding: 40px 24px 24px;
-            }
-
             .header-user-info {
                 flex-direction: column;
                 gap: 12px;
-                align-items: flex-start;
+                align-items: stretch;
             }
 
-            .logout-btn {
-                align-self: flex-end;
+            .header-actions {
+                width: 100%;
+                justify-content: space-between;
             }
 
-            .todo-title {
-                font-size: 40px;
+            .stats-bar {
+                padding: 12px 16px;
             }
 
-            .todo-subtitle {
-                font-size: 15px;
+            .stat-number {
+                font-size: 20px;
             }
 
-            .input-section {
-                padding: 24px;
-            }
-
-            .input-wrapper {
-                margin-bottom: 24px;
+            .filter-tabs {
+                padding: 16px 16px 0;
+                overflow-x: auto;
             }
 
             .task-input {
                 padding: 16px 20px;
-                padding-right: 20px;
                 padding-bottom: 70px;
-                font-size: 16px;
             }
 
             .add-btn {
@@ -685,87 +808,10 @@
                 transform: none;
                 width: calc(100% - 12px);
                 padding: 14px;
-                font-size: 16px;
             }
 
-            .add-btn:hover {
-                transform: scale(1.02);
-            }
-
-            .tasks-container {
-                padding: 0 24px 24px;
-            }
-
-            .task-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-                padding: 20px;
-            }
-
-            .task-content {
-                width: 100%;
-            }
-
-            .task-title-wrapper {
-                width: 100%;
-            }
-
-            .edit-form {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .edit-input {
-                width: 100%;
-                font-size: 16px;
-                padding: 12px 16px;
-            }
-
-            .edit-buttons {
-                width: 100%;
-                gap: 8px;
-            }
-
-            .save-btn, .cancel-btn {
-                flex: 1;
-                padding: 10px;
-                font-size: 14px;
-            }
-
-            .task-actions {
-                width: 100%;
-                justify-content: flex-end;
-                gap: 10px;
-            }
-
-            .action-btn {
-                padding: 10px 20px;
-                font-size: 15px;
-            }
-
-            .footer {
-                padding: 32px 16px;
-            }
-
-            .footer-content {
-                padding: 20px 24px;
-                border-radius: 16px;
-            }
-
-            .footer-text {
-                font-size: 15px;
-                line-height: 1.6;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .todo-title {
-                font-size: 36px;
-            }
-
-            .footer-text {
-                font-size: 14px;
+            .shortcuts-hint {
+                display: none;
             }
         }
     </style>
@@ -779,27 +825,56 @@
         <div class="header-section">
             <div class="header-user-info">
                 <span class="welcome-text">Welcome, <span th:text="${username}">User</span>!</span>
-                <!-- Logout Form with CSRF -->
-                <form th:action="@{/logout}" method="post" style="margin: 0;">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                    <button type="submit" class="logout-btn">Logout</button>
-                </form>
+                <div class="header-actions">
+                    <!-- Theme Toggle -->
+                    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+                        <span class="theme-icon" id="themeIcon">🌙</span>
+                    </button>
+                    <!-- Logout Form -->
+                    <form th:action="@{/logout}" method="post" style="margin: 0;">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <button type="submit" class="logout-btn">Logout</button>
+                    </form>
+                </div>
             </div>
             <h1 class="todo-title">MindList</h1>
             <p class="todo-subtitle">Keep life simple & organized</p>
         </div>
 
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-number" id="totalTasks">0</span>
+                <span class="stat-label">Total</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="activeTasks">0</span>
+                <span class="stat-label">Active</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="completedTasks">0</span>
+                <span class="stat-label">Completed</span>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="filterTasks('all')" data-filter="all">All</button>
+            <button class="filter-tab" onclick="filterTasks('active')" data-filter="active">Active</button>
+            <button class="filter-tab" onclick="filterTasks('completed')" data-filter="completed">Completed</button>
+        </div>
+
         <!-- Input Section -->
         <div class="input-section">
-            <form th:action="@{/}" method="post">
-                <!-- CSRF Token for Add Task Form -->
+            <form th:action="@{/}" method="post" id="addTaskForm">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <div class="input-wrapper">
                     <input
                             type="text"
                             name="title"
+                            id="taskInput"
                             class="task-input"
-                            placeholder="What needs to be done?"
+                            placeholder="What needs to be done? (Press Enter or Ctrl+Enter)"
                             autocomplete="off"
                             required>
                     <button class="add-btn" type="submit">Add Task</button>
@@ -808,32 +883,28 @@
         </div>
 
         <!-- Task List -->
-        <div class="tasks-container">
+        <div class="tasks-container" id="tasksContainer">
             <div th:each="task : ${tasks}"
                  th:classappend="${task.completed} ? 'completed' : ''"
+                 th:attr="data-completed=${task.completed}"
                  class="task-item">
 
                 <div class="task-content">
                     <div class="task-checkbox"></div>
 
                     <div class="task-title-wrapper">
-                        <!-- View Mode: Click to Edit -->
                         <span th:text="${task.title}"
                               class="task-title"
                               onclick="enableEdit(this)">
                         </span>
 
-                        <!-- Edit Mode: Hidden by default -->
                         <form th:action="@{/{id}/update(id=${task.id})}"
                               method="post"
-                              class="edit-form"
-                              onsubmit="return true;">
-                            <!-- CSRF Token for Update Form -->
+                              class="edit-form">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                             <input type="text"
                                    name="title"
                                    th:value="${task.title}"
-                                   th:classappend="${task.completed} ? 'completed' : ''"
                                    class="edit-input"
                                    onblur="handleBlur(this, event)"
                                    onkeydown="handleKeydown(event)">
@@ -878,51 +949,135 @@
     </div>
 </div>
 
+<!-- Keyboard Shortcuts Hint -->
+<div class="shortcuts-hint">
+    💡 Tip: Press <kbd>Ctrl</kbd>+<kbd>Enter</kbd> to add task quickly
+</div>
+
 <script>
-    // Enable edit mode when clicking on task title
+    // Theme Management
+    function initTheme() {
+        const savedTheme = localStorage.getItem('mindlist-theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            setTheme('dark');
+        } else {
+            setTheme('light');
+        }
+    }
+
+    function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        const icon = document.getElementById('themeIcon');
+        icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+        localStorage.setItem('mindlist-theme', theme);
+    }
+
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        setTheme(newTheme);
+    }
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('mindlist-theme')) {
+            setTheme(e.matches ? 'dark' : 'light');
+        }
+    });
+
+    // Task Filtering
+    let currentFilter = 'all';
+
+    function filterTasks(filter) {
+        currentFilter = filter;
+
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.classList.remove('active');
+            if (tab.getAttribute('data-filter') === filter) {
+                tab.classList.add('active');
+            }
+        });
+
+        const tasks = document.querySelectorAll('.task-item');
+        tasks.forEach(task => {
+            const isCompleted = task.getAttribute('data-completed') === 'true';
+
+            if (filter === 'all') {
+                task.classList.remove('hidden');
+            } else if (filter === 'active' && !isCompleted) {
+                task.classList.remove('hidden');
+            } else if (filter === 'completed' && isCompleted) {
+                task.classList.remove('hidden');
+            } else {
+                task.classList.add('hidden');
+            }
+        });
+
+        updateEmptyState();
+    }
+
+    function updateEmptyState() {
+        const visibleTasks = document.querySelectorAll('.task-item:not(.hidden)').length;
+        const emptyState = document.querySelector('.empty-state');
+
+        if (emptyState) {
+            if (visibleTasks === 0) {
+                emptyState.style.display = 'block';
+                const text = emptyState.querySelector('.empty-state-text');
+                if (currentFilter === 'active') {
+                    text.textContent = 'No active tasks. Time to relax! 🎉';
+                } else if (currentFilter === 'completed') {
+                    text.textContent = 'No completed tasks yet. Keep going! 💪';
+                } else {
+                    text.textContent = 'No tasks yet. Enjoy the calm! 🌿';
+                }
+            } else {
+                emptyState.style.display = 'none';
+            }
+        }
+    }
+
+    // Statistics
+    function updateStats() {
+        const tasks = document.querySelectorAll('.task-item');
+        const completed = document.querySelectorAll('.task-item.completed').length;
+        const total = tasks.length;
+        const active = total - completed;
+
+        document.getElementById('totalTasks').textContent = total;
+        document.getElementById('activeTasks').textContent = active;
+        document.getElementById('completedTasks').textContent = completed;
+    }
+
+    // Task Editing
     function enableEdit(titleElement) {
         const wrapper = titleElement.parentElement;
         const form = wrapper.querySelector('.edit-form');
         const input = form.querySelector('.edit-input');
 
-        // Add editing class to wrapper
         wrapper.classList.add('editing');
-
-        // Show form and focus input
         form.classList.add('active');
         input.focus();
-
-        // Select all text for easy editing
         input.select();
     }
 
-    // Cancel edit mode
     function cancelEdit(cancelBtn) {
         const form = cancelBtn.closest('.edit-form');
         const wrapper = form.parentElement;
         const input = form.querySelector('.edit-input');
         const titleElement = wrapper.querySelector('.task-title');
 
-        // Reset input value to original
         input.value = titleElement.textContent.trim();
-
-        // Hide form and show title
         form.classList.remove('active');
         wrapper.classList.remove('editing');
     }
 
-    // Handle blur event (when clicking outside)
     function handleBlur(input, event) {
-        // Delay to allow form submission if save button was clicked
         setTimeout(() => {
             const form = input.closest('.edit-form');
-            const wrapper = form.parentElement;
-
-            // Only cancel if still in edit mode (wasn't submitted)
             if (form.classList.contains('active')) {
                 const relatedTarget = event.relatedTarget;
-
-                // Don't cancel if clicking save or cancel button
                 if (!relatedTarget || (!relatedTarget.classList.contains('save-btn') &&
                     !relatedTarget.classList.contains('cancel-btn'))) {
                     cancelEdit(input);
@@ -931,31 +1086,43 @@
         }, 150);
     }
 
-    // Handle keyboard shortcuts
     function handleKeydown(event) {
-        // ESC to cancel
         if (event.key === 'Escape') {
             event.preventDefault();
-            const input = event.target;
-            const form = input.closest('.edit-form');
+            const form = event.target.closest('.edit-form');
             const cancelBtn = form.querySelector('.cancel-btn');
             cancelEdit(cancelBtn);
         }
-
-        // Enter to submit (handled by form naturally, but prevent newline)
         if (event.key === 'Enter') {
             event.preventDefault();
-            const form = event.target.closest('.edit-form');
-            form.submit();
+            event.target.closest('.edit-form').submit();
         }
     }
 
-    // Prevent accidental form submission on checkbox click
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            const input = document.getElementById('taskInput');
+            if (input.value.trim()) {
+                document.getElementById('addTaskForm').submit();
+            }
+        }
+
+        if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+            e.preventDefault();
+            document.getElementById('taskInput').focus();
+        }
+    });
+
+    // Checkbox Click Handler
     document.addEventListener('DOMContentLoaded', function() {
+        initTheme();
+        updateStats();
+
         const checkboxes = document.querySelectorAll('.task-checkbox');
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('click', function(e) {
-                // Find the toggle link in the same task item
                 const taskItem = this.closest('.task-item');
                 const toggleLink = taskItem.querySelector('.btn-toggle');
                 if (toggleLink) {
