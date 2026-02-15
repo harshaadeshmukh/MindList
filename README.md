@@ -180,20 +180,6 @@ MindList/
 ✅ Session-based authentication  
 ✅ Protected routes (login required)  
 
----
-
-## Author
-
-**Harshad Deshmukh**
-
-- 🌐 [Portfolio](https://harshaadeshmukh.netlify.app)
-- 💻 [GitHub](https://github.com/harshaadeshmukh)
-
----
-
-## License
-
-MIT License - feel free to use this project for learning!
 
 ---
 
